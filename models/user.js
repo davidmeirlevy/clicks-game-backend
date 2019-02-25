@@ -1,7 +1,8 @@
 const {promisify} = require('util');
 const uniqid = require('uniqid');
+const {redisUrl} = require('../config');
 const redis = require('redis');
-const client = redis.createClient();
+const client = redis.createClient(redisUrl);
 
 const setAsync = promisify(client.set).bind(client);
 const getAsync = promisify(client.get).bind(client);

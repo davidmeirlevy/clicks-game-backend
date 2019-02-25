@@ -2,6 +2,8 @@ const {debounce, sortBy, values} = require('lodash');
 const {promisify} = require('util');
 const redis = require('redis');
 const {redisUrl} = require('../config');
+
+console.log('redis login url', redisUrl);
 const client = redis.createClient(redisUrl);
 const pub = redis.createClient(redisUrl);
 const sub = redis.createClient(redisUrl);

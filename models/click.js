@@ -1,9 +1,10 @@
 const {debounce, sortBy, values} = require('lodash');
 const {promisify} = require('util');
 const redis = require('redis');
-const client = redis.createClient();
-const pub = redis.createClient();
-const sub = redis.createClient();
+const {redisUrl} = require('../config');
+const client = redis.createClient(redisUrl);
+const pub = redis.createClient(redisUrl);
+const sub = redis.createClient(redisUrl);
 
 const setAsync = promisify(client.set).bind(client);
 const getAsync = promisify(client.get).bind(client);

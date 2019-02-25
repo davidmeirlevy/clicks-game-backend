@@ -1,5 +1,6 @@
 const {getStep} = require('../models/step');
 const {subscribeToRoom} = require('../models/click');
+const {subscribeToRound} = require('../models/round');
 
 
 function publish(socket, eventName, data) {
@@ -24,6 +25,9 @@ function createRoomPubSub(socket) {
 	subscribeToRoom(token, room, list => {
 		publish(socket, 'ranksUpdated', list);
 	});
+	subscribeToRound(token, room, winner => {
+		publish(socket, 'lastWinner', winner);
+	})
 }
 
 module.exports = {

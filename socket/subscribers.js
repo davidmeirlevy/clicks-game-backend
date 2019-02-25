@@ -1,5 +1,6 @@
 const {getUser, updateUser} = require('../models/user');
 const {unSubscribeToRoom, addClick} = require('../models/click');
+const {unSubscribeToRound} = require('../models/round');
 const {publishUser, publishStep, publishPong, createRoomPubSub} = require('./publishers');
 
 function on(socket, event, cb) {
@@ -25,6 +26,7 @@ function disconnect(socket) {
 	socket.on('disconnect', () => {
 		if (socket.user && socket.user.room) {
 			unSubscribeToRoom(socket.user.token, socket.user.room);
+			unSubscribeToRound(socket.user.token, socket.user.room);
 		}
 		console.log(`Client disconnected`);
 	});

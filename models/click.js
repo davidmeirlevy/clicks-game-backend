@@ -38,7 +38,7 @@ function get(key) {
 }
 
 function addClick(user) {
-	if (!subscribersRunners[user.room]) return;
+	if (!user || !subscribersRunners[user.room]) return;
 
 	const key = 'competitors:' + user.room;
 	return get(key)

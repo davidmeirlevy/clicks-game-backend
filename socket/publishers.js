@@ -1,5 +1,6 @@
 const {getStep} = require('../models/step');
 const {subscribeToRoom} = require('../models/click');
+const {rooms} = require('../models/room');
 const {subscribeToRound} = require('../models/round');
 
 
@@ -22,13 +23,13 @@ function publishStep(socket) {
 
 function createRoomPubSub(socket) {
 	const {token, room} = socket.user;
-	if(token && ['red', 'green', 'orange', 'pink'].includes(room)) {
+	if (token && rooms.includes(room)) {
 		subscribeToRoom(token, room, list => {
 			publish(socket, 'ranksUpdated', list);
-	});
+		});
 		subscribeToRound(token, room, winner => {
 			publish(socket, 'lastWinner', winner);
-	});
+		});
 	}
 
 }

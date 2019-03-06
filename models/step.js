@@ -1,3 +1,5 @@
+const {rooms} = require('./room');
+
 const STEPS = [
 	{
 		message: 'Please enter your nickname',
@@ -8,7 +10,7 @@ const STEPS = [
 		message: 'Please select a room to play',
 		name: 'room',
 		action: 'updateRoom',
-		options: ['red', 'green', 'orange', 'pink']
+		options: rooms
 	},
 	{
 		message: 'Go play with your friends',

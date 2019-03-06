@@ -1,7 +1,8 @@
-const {debounce, sortBy, values} = require('lodash');
+const {throttle, sortBy, values} = require('lodash');
 const {promisify} = require('util');
 const redis = require('redis');
 const {redisUrl} = require('../config');
+const {rooms, getRoomsObject} = require('./room');
 
 const client = redis.createClient(redisUrl);
 const pub = redis.createClient(redisUrl);
@@ -12,16 +13,12 @@ const getAsync = promisify(client.get).bind(client);
 
 const competitorsUpdate = 'competitorsUpdate';
 const delayListUpdate = 300;
-const subscribers = {
-	'red': {}, 'green': {}, 'orange': {}, 'pink': {}
-};
+const subscribers = getRoomsObject();
 
-const subscribersRunners = {
-	'red': debounce(runSubscribers.bind(runSubscribers, 'red'), delayListUpdate),
-	'green': debounce(runSubscribers.bind(runSubscribers, 'green'), delayListUpdate),
-	'orange': debounce(runSubscribers.bind(runSubscribers, 'orange'), delayListUpdate),
-	'pink': debounce(runSubscribers.bind(runSubscribers, 'pink'), delayListUpdate),
-};
+const subscribersRunners = rooms.reduce((result, room) => {
+	result[room] = throttle(runSubscribers.bind(runSubscribers, room), delayListUpdate);
+	return result;
+}, {});
 
 sub.on('message', (type, room) => {
 	subscribersRunners[room]();

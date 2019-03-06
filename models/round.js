@@ -1,6 +1,8 @@
 const {values} = require('lodash');
 const {promisify} = require('util');
 const redis = require('redis');
+const {rooms, getRoomsObject} = require('./room');
+
 const {redisUrl} = require('../config');
 
 const client = redis.createClient(redisUrl);
@@ -9,12 +11,10 @@ const sub = redis.createClient(redisUrl);
 const getAsync = promisify(client.get).bind(client);
 
 const roundUpdate = 'newRound';
-const subscribers = {
-	'red': {}, 'green': {}, 'orange': {}, 'pink': {}
-};
+const subscribers = getRoomsObject();
 
 sub.on('message', () => {
-	['red', 'green', 'orange', 'pink'].forEach(room => {
+	rooms.forEach(room => {
 		runSubscribers(room);
 	})
 });

@@ -1,3 +1,4 @@
+const {throttle} = require('lodash');
 const {getUser, updateUser} = require('../models/user');
 const {unSubscribeToRoom, addClick} = require('../models/click');
 const {unSubscribeToRound} = require('../models/round');
@@ -66,9 +67,7 @@ function onPing(socket) {
 }
 
 function onClick(socket) {
-	on(socket, 'clicked', () => {
-		addClick(socket.user);
-	});
+	on(socket, 'clicked', throttle(addClick.bind(addClick, socket.user), 10));
 }
 
 module.exports = [

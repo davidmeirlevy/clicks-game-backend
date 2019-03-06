@@ -67,7 +67,10 @@ function onPing(socket) {
 }
 
 function onClick(socket) {
-	on(socket, 'clicked', throttle(addClick.bind(addClick, socket.user), 10));
+	const throttledAddClick = throttle(addClick, 10);
+	on(socket, 'clicked', () => {
+		throttledAddClick(socket.user);
+	});
 }
 
 module.exports = [

@@ -41,7 +41,15 @@ async function run() {
 	}));
 
 	await keysAsync('*').then(keys => {
-		console.log('all keys:', keys);
+		console.log('all keys', keys);
+
+		return Promise.all(
+			keys
+				.filter(key => key.startsWith('user:'))
+				.map(key => get(key)
+					.then(data => set(key, {...data, room: null}))
+				)
+		)
 	});
 }
 

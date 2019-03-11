@@ -1,6 +1,6 @@
 const {promisify} = require('util');
 const redis = require('redis');
-const {rooms} = require('./model/room');
+const {rooms} = require('./models/room');
 const {redisUrl} = require('./config');
 
 const client = redis.createClient(redisUrl);

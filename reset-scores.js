@@ -40,8 +40,8 @@ async function run() {
 			});
 	}));
 
-	await keysAsync('users:*').then(users => {
-		console.log('all users:', users);
+	await keysAsync('*').then(keys => {
+		console.log('all keys:', keys);
 	});
 }
 

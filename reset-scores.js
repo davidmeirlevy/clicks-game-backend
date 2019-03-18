@@ -35,8 +35,6 @@ async function run() {
 				console.log('winner for ' + room, winner);
 				set(key, {});
 				set('lastWinner:' + room, winner);
-
-				client.publish('newRound', null);
 			});
 	}));
 
@@ -51,6 +49,8 @@ async function run() {
 				)
 		)
 	});
+
+	client.publish('newRound', null);
 }
 
 run().then(() => process.exit());

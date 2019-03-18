@@ -1,5 +1,6 @@
 const {getStep} = require('../models/step');
 const {getUser} = require('../models/user');
+const {getLastWinner} = require('../models/round');
 const {subscribeToRoom, unSubscribeToRoom} = require('../models/click');
 const {rooms} = require('../models/room');
 const {subscribeToRound} = require('../models/round');
@@ -22,6 +23,13 @@ function publishStep(socket) {
 	return publish(socket, 'currentStep', step);
 }
 
+function publishLastWinner(socket) {
+	return getLastWinner(socket.user.room)
+		.then(winner => {
+			return publish(socket, 'lastWinner', winner);
+		});
+}
+
 function createRoomPubSub(socket) {
 	const {token, room} = socket.user;
 	if (token && rooms.includes(room)) {
@@ -31,11 +39,18 @@ function createRoomPubSub(socket) {
 		});
 		subscribeToRound(token, room, winner => {
 			publish(socket, 'lastWinner', winner);
-			unSubscribeToRoom(token, room);
-			socket.user.room = null;
-			publishUser(socket);
-			publishStep(socket);
+			getUser(token)
+				.then(user => {
+					socket.user = user;
+					if (room !== user.room) {
+						unSubscribeToRoom(token, room);
+					}
+
+					publishUser(socket);
+					publishStep(socket);
+				});
 		});
+		publishLastWinner(socket);
 	}
 }
 

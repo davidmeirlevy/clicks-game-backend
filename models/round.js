@@ -55,4 +55,5 @@ function runSubscribers(room) {
 module.exports = {
 	subscribeToRound,
 	unSubscribeToRound,
+	getLastWinner,
 };

@@ -1,5 +1,6 @@
 const {getStep} = require('../models/step');
-const {subscribeToRoom} = require('../models/click');
+const {getUser} = require('../models/user');
+const {subscribeToRoom, unSubscribeToRoom} = require('../models/click');
 const {rooms} = require('../models/room');
 const {subscribeToRound} = require('../models/round');
 
@@ -24,14 +25,29 @@ function publishStep(socket) {
 function createRoomPubSub(socket) {
 	const {token, room} = socket.user;
 	if (token && rooms.includes(room)) {
+		console.log('subscribe to room', token, room);
 		subscribeToRoom(token, room, list => {
 			publish(socket, 'ranksUpdated', list);
 		});
 		subscribeToRound(token, room, winner => {
 			publish(socket, 'lastWinner', winner);
+			unSubscribeToRoom(token, room);
+			socket.user.room = null;
+			publishUser(socket);
+			publishStep(socket);
 		});
 	}
+}
 
+function createAllRoomsPubSub(socket) {
+	rooms.forEach(room => {
+		subscribeToRoom(socket.user.token, room, list => {
+			publish(socket, 'ranksUpdated:all', {[room]: list});
+		});
+		subscribeToRound(socket.user.token, room, winner => {
+			publish(socket, 'lastWinner:all', {[room]: winner});
+		});
+	});
 }
 
 module.exports = {
@@ -39,4 +55,5 @@ module.exports = {
 	publishStep,
 	publishPong,
 	createRoomPubSub,
+	createAllRoomsPubSub,
 };

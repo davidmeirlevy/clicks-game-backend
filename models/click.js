@@ -37,9 +37,11 @@ function get(key) {
 function addClick(user) {
 	if (!user || !subscribersRunners[user.room]) return;
 
+	console.log('click', user.token, user.room);
 	const key = 'competitors:' + user.room;
 	return get(key)
 		.then(data => {
+			console.log('before compats', data instanceof Array);
 			if (!data) {
 				data = {};
 			}
@@ -48,6 +50,7 @@ function addClick(user) {
 			} else {
 				data[user.token].clicks++;
 			}
+			console.log('room set', key, data);
 			set(key, data);
 			pub.publish(competitorsUpdate, user.room);
 		});

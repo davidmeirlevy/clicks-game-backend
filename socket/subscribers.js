@@ -2,7 +2,7 @@ const {throttle} = require('lodash');
 const {getUser, updateUser} = require('../models/user');
 const {unSubscribeToRoom, addClick} = require('../models/click');
 const {unSubscribeToRound} = require('../models/round');
-const {publishUser, publishStep, publishPong, createRoomPubSub} = require('./publishers');
+const {publishUser, publishStep, publishPong, createRoomPubSub, createAllRoomsPubSub} = require('./publishers');
 
 function on(socket, event, cb) {
 	socket.on(event, data => {
@@ -73,6 +73,13 @@ function onClick(socket) {
 	});
 }
 
+
+function allRooms(socket) {
+	on(socket, 'allRooms', () => {
+		createAllRoomsPubSub(socket);
+	});
+}
+
 module.exports = [
 	register,
 	disconnect,
@@ -81,4 +88,5 @@ module.exports = [
 	updateRoom,
 	onPing,
 	onClick,
+	allRooms,
 ];

@@ -33,7 +33,7 @@ async function run() {
 					}
 				});
 				console.log('winner for ' + room, winner);
-				set(key, []);
+				set(key, {});
 				set('lastWinner:' + room, winner);
 
 				client.publish('newRound', null);

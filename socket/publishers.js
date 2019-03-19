@@ -62,6 +62,14 @@ function createAllRoomsPubSub(socket) {
 		subscribeToRound(socket.user.token, room, winner => {
 			publish(socket, 'lastWinner:all', {[room]: winner});
 		});
+
+		rooms.forEach(room => {
+			getLastWinner(socket.user.room)
+				.then(winner => {
+					publish(socket, 'lastWinner:all', {[room]: winner});
+				});
+		});
+
 	});
 }
 
